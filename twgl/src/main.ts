@@ -1,12 +1,10 @@
 import * as twgl from 'twgl';
 import './style.css'
-// Importamos los shaders como texto plano (gracias a Vite)
-// Nota: Si no usas Vite, tendrías que usar fetch() o strings literales.
 import vs from './shaders/vertex.glsl?raw';
 import fs from './shaders/fragment.glsl?raw';
 
 const main = () => {
-  // 1. Obtener el contexto WebGL2
+  // Obtener el contexto WebGL2
   const canvas = document.getElementById("c");
   const gl = canvas.getContext("webgl2");
 
@@ -15,11 +13,10 @@ const main = () => {
     return;
   }
 
-  // 2. Crear el programa (compila shaders y linkea el programa)
-  // TWGL hace todo el trabajo sucio de crear shaders, adjuntar y linkear
+  // Crear el programa (compila shaders y linkea el programa)
   const programInfo = twgl.createProgramInfo(gl, [vs, fs]);
 
-  // 3. Crear los datos (Buffers)
+  // Crear los datos (Buffers)
   // createBufferInfoFromArrays crea los buffers y los configura automáticamente.
   // Aquí definimos el triangulo
   const arrays = {
@@ -31,15 +28,13 @@ const main = () => {
         0.4,  -0.2,  0,
       ],
     },
-    // NUEVO: Agregamos el array de colores
     // TWGL emparejará automáticamente este array con 'in vec3 color' en el shader
     color: {
       numComponents: 3, // Indicamos que son 3 valores por vértice (R, G, B)
       data: [
-        // Colores para el Primer triángulo (RGB)
-        1, 0, 0,  // Rojo (para -1,-1)
-        0, 1, 0,  // Verde (para 1,-1)
-        0, 0, 1,  // Azul (para -1, 1)
+        1, 0, 0,  // Rojo 
+        0, 1, 0,  // Verde
+        0, 0, 1,  // Azul 
       ],
     },
   };
@@ -49,16 +44,20 @@ const main = () => {
   const render = (time) => {
     time *= 0.001; // Convertir a segundos
 
-    // 4. Ajustar el tamaño del canvas automáticamente si la ventana cambia
+    // Ajustar el tamaño del canvas automáticamente si la ventana cambia
     twgl.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-    // 5. Configurar el programa y los buffers
+    
+    // Agregar color gris de fondo
+    gl.clearColor(0.5, 0.5, 0.5, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    
+    // Configurar el programa y los buffers
     gl.useProgram(programInfo.program);
     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
 
 
-    // 6. Dibujar
+    // Dibujar
     twgl.drawBufferInfo(gl, bufferInfo);
 
     requestAnimationFrame(render);

@@ -4,18 +4,19 @@ import vs from './shaders/vertex.glsl?raw';
 import fs from './shaders/fragment.glsl?raw';
 
 const main = () => {
-  // 1. Setup básico de Three.js
+
   const canvas = document.querySelector('#c');
   const renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
-
-  // Cámara Ortográfica (simulando 2D plano como en TWGL)
+  scene.background = new THREE.Color(0.5, 0.5, 0.5);
+ 
+  // Cámara Ortográfica
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
   camera.position.z = 1;
 
-  // 2. Geometría (Igual que antes)
+  // Geometría
   const geometry = new THREE.BufferGeometry();
 
   const positions = new Float32Array([
@@ -34,7 +35,7 @@ const main = () => {
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   
-  // 3. EL CAMBIO: RawShaderMaterial
+  // Programa de Shaders
   const material = new THREE.RawShaderMaterial({
     vertexShader: vs,
     fragmentShader: fs,
@@ -43,7 +44,6 @@ const main = () => {
       viewMatrix: { value: camera.matrixWorldInverse },
       modelMatrix: { value: new THREE.Matrix4() },
     },
-    // Definimos explicitamente la version para poder usar sintaxis de WebGL 2 (#version 300 es)
     glslVersion: THREE.GLSL3, 
     side: THREE.DoubleSide
   });
